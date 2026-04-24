@@ -1,0 +1,67 @@
+name: Build Oxware (Windows)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup vcpkg if present
+        shell: pwsh
+        run: |
+          if (Test-Path vcpkg.json) {
+            Write-Host "vcpkg manifest found"
+            if (-not (Test-Path vcpkg)) {
+              git clone https://github.com/microsoft/vcpkg.git vcpkg
+              & .\vcpkg\bootstrap-vcpkg.bat
+            }
+            .\vcpkg\vcpkg.exe install --triplet x86-windows
+            .\vcpkg\vcpkg.exe integrate install
+          } elseif (Test-Path .\vcpkg) {
+            Write-Host "vcpkg folder found"
+            & .\vcpkg\bootstrap-vcpkg.bat
+            .\vcpkg\vcpkg.exe integrate install
+          } else {
+            Write-Host "No vcpkg manifest or folder found — skipping vcpkg"
+          }
+
+      - name: Restore NuGet packages (if any)
+        shell: pwsh
+        run: |
+          if (Test-Path packages.config) {
+            nuget restore oxware.sln || Write-Host "nuget restore failed or not required"
+          } else {
+            Write-Host "No packages.config found — skipping nuget restore"
+          }
+
+      - name: Build solution with MSBuild (apply fixes)
+        shell: pwsh
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}\vcpkg
+        run: |
+          msbuild oxware.sln /p:Configuration=Release /p:Platform=Win32 \
+            "/p:PreprocessorDefinitions=WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)" \
+            /p:PrecompiledHeader=NotUsing \
+            "/p:ObjectFileName=$(IntDir)%(RelativeDir)\\" /m
+
+      - name: Collect build outputs list
+        shell: pwsh
+        run: |
+          Write-Host "Built files (matching *.exe and *.dll):"
+          Get-ChildItem -Path $PWD -Recurse -Include *.exe, *.dll -ErrorAction SilentlyContinue | Select-Object FullName -First 200 | ForEach-Object { Write-Host $_.FullName }
+
+      - name: Upload binaries (.exe and .dll)
+        uses: actions/upload-artifact@v4
+        with:
+          name: oxware-binaries
+          path: |
+            **\*.exe
+            **\*.dll
