@@ -312,6 +312,7 @@ enum EPlayerHull
 #include "features/NonSteamFpsFixer.h"
 #include "features/AntiDemoRecorder.h"
 #include "features/WorldVisuals.h"
+#include "features/CustomVision.h"
 #include "features/AntiScreen.h"
 #include "features/AspectRatioChanger.h"
 #include "features/Automation.h"

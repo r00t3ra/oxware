@@ -148,5 +148,8 @@ void CFeatureManager::precache_features()
 	// fake latency
 	add_new_feature(BaseFeature(&fake_latency, "Fake latency"));
 
+	// custom vision
+	add_new_feature(BaseFeature(&customvision_enable, "CustomVision"));
+
 	CConsole::the().info("Precached all features.");
 }

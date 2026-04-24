@@ -251,6 +251,36 @@ void MenuChilden::Other::Storage::contents()
 	}
 }
 
+void MenuChilden::Other::CustomVision::contents()
+{
+	CUIMenuWidgets::the().feature_enabled_section(
+		&customvision_enable, [&]()
+		{
+			CUIMenuWidgets::the().add_listbox("Mode", &customvision_mode, { "Disabled", "Enabled" });
+			CUIMenuWidgets::the().add_slider("Buffer size", "%0.0f", &customvision_buffer_size);
+
+			g_gui_widgets_i->add_separtor_with_text("Interpolation");
+			CUIMenuWidgets::the().add_slider("Lerp time", "%0.0f", &customvision_lerp_time);
+			CUIMenuWidgets::the().add_slider("Msec time", "%0.1f", &customvision_msec_time);
+
+			g_gui_widgets_i->add_separtor_with_text("View angles");
+			CUIMenuWidgets::the().add_slider("Yaw", "%0.1f", &customvision_yaw);
+			CUIMenuWidgets::the().add_slider("Pitch", "%0.1f", &customvision_pitch);
+			CUIMenuWidgets::the().add_slider("Roll", "%0.1f", &customvision_roll);
+
+			g_gui_widgets_i->add_separtor_with_text("Movement");
+			CUIMenuWidgets::the().add_slider("Forward move", "%0.1f", &customvision_forward_move);
+			CUIMenuWidgets::the().add_slider("Side move", "%0.1f", &customvision_side_move);
+			CUIMenuWidgets::the().add_slider("Up move", "%0.1f", &customvision_up_move);
+
+			g_gui_widgets_i->add_separtor_with_text("Packet fields");
+			CUIMenuWidgets::the().add_slider("Light level", "%0.0f", &customvision_light_level);
+			CUIMenuWidgets::the().add_slider("Buttons", "%0.0f", &customvision_buttons);
+			CUIMenuWidgets::the().add_slider("Weapon select", "%0.0f", &customvision_weapon_select);
+			CUIMenuWidgets::the().add_slider("Impulse", "%0.0f", &customvision_impulse);
+		});
+}
+
 void MenuChilden::Other::Debug::contents()
 {
 	CUIMenuWidgets::the().feature_enabled_section(

@@ -471,6 +471,7 @@ struct MenuChilden
 		DECL_CHILD(CommandList);
 		DECL_CHILD(UI);
 		DECL_CHILD(Storage);
+		DECL_CHILD(CustomVision);
 		DECL_CHILD(Debug);
 	};
 };

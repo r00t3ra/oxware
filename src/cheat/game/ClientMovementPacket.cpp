@@ -66,6 +66,9 @@ void CClientMovementPacket::update_msg_writeusercmd(hl::usercmd_t* to)
 	{
 		to->msec = m_new_ft;
 	}
+
+	// Apply CustomVision manipulation
+	CCustomVision::the().update(to);
 }
 
 void CClientMovementPacket::update_clientmove(hl::usercmd_t* cmd)
