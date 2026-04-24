@@ -47,7 +47,18 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}\vcpkg
         run: |
-          msbuild oxware.sln /p:Configuration=Release /p:Platform=Win32 /p:PreprocessorDefinitions="WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)" /p:PrecompiledHeader=NotUsing '/p:ObjectFileName=$(IntDir)%(RelativeDir)\' /m
+          $vswhere = Join-Path $env:'ProgramFiles(x86)' 'Microsoft Visual Studio\Installer\vswhere.exe'
+          if (Test-Path $vswhere) {
+            $inst = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
+            $msbuildPath = Join-Path $inst 'MSBuild\Current\Bin\MSBuild.exe'
+            if (-not (Test-Path $msbuildPath)) {
+              $msbuildPath = Join-Path $inst 'MSBuild\15.0\Bin\MSBuild.exe'
+            }
+          } else {
+            $msbuildPath = 'msbuild'
+          }
+          Write-Host "Using MSBuild: $msbuildPath"
+          & $msbuildPath 'oxware.sln' '/p:Configuration=Release' '/p:Platform=Win32' '/p:PreprocessorDefinitions="WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)"' '/p:PrecompiledHeader=NotUsing' '/p:ObjectFileName=$(IntDir)%(RelativeDir)\\' '/m'
 
       - name: Collect build outputs list
         shell: pwsh
