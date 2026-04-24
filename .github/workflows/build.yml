@@ -47,10 +47,7 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}\vcpkg
         run: |
-          msbuild oxware.sln /p:Configuration=Release /p:Platform=Win32 \
-            "/p:PreprocessorDefinitions=WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)" \
-            /p:PrecompiledHeader=NotUsing \
-            "/p:ObjectFileName=$(IntDir)%(RelativeDir)\\" /m
+          msbuild oxware.sln /p:Configuration=Release /p:Platform=Win32 /p:PreprocessorDefinitions="WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)" /p:PrecompiledHeader=NotUsing '/p:ObjectFileName=$(IntDir)%(RelativeDir)\' /m
 
       - name: Collect build outputs list
         shell: pwsh
