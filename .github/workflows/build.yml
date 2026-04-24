@@ -47,7 +47,7 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}\vcpkg
         run: |
-          $vswhere = Join-Path $env:'ProgramFiles(x86)' 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
           if (Test-Path $vswhere) {
             $inst = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
             $msbuildPath = Join-Path $inst 'MSBuild\Current\Bin\MSBuild.exe'
